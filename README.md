@@ -1,5 +1,5 @@
 # tema4_SO
-Planificator de threaduri
+Planificator de threaduri\
 Chirita Maria-Luissa 332CA
 
 Organizare: \
