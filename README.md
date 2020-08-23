@@ -1,2 +1,67 @@
 # tema4_SO
 Planificator de threaduri
+Chirita Maria-Luissa 332CA
+
+Organizare: \
+	Functiile cerute au fost implementate in fisierul so_scheduler.c. \
+	Structura thread contine id-ul thread-ului, prioritatea sa, cuanta de timp,
+	statusul (starea in care este: NEW, READY, RUNNING, WAITING, TERMINATED),
+	handler-ul si semaforul care ii permite thread-ului sa ruleze sau nu.
+\
+	Structura scheduler descrie planificatorul si contine campul initialized,
+	care devine 1 atunci cand este initializat (pentru a evita double init),
+	numarul de evenimente io posibile, cuanta de timp, thread-ul care ruleaza
+	la un moment dat, coada de prioritati (un vector ordonat descrescator, dupa
+	prioritate), dimensiunea acesteia, vectorul in care retin thread-urile
+	create si dimensiunea sa.\
+\
+	Pentru functia DIE am folosit fisierul utils.h de la laborator.
+\
+Implementare:
+	Am implementat functiile conform enuntului.\
+	so_init - 	Am verificat ca planificatorul sa nu fi fost deja initializat
+				si am verificat ca parametrii sa fie valizi. Am initializat
+				campurile structurii si am alocat memoria necesara.\
+	so_end - 	Se asteapta thread-urile sa termine executia si apoi se 
+				elibereaza memoria alocata si se distrug semafoarele.\
+	so_fork - 	Verific parametrii sa fie valizi. Creez un nou thread, ii
+				initializez campurile, iar apoi il pornesc. Dupa aceea, adaug
+				noul thread in coada cu prioritati si in vectorul cu threaduri.
+				Daca nu exista un thread care ruleaza, atunci rulez urmatorul.
+				Altfel, consuma timp si verific daca trebuie sa fie preemptat.
+	so_wait - 	Verific ca parametrii sa fie valizi, modific starea thread-ului
+				curent in WAITING pentru a-l bloca si apelez call_scheduler()
+				pentru a rula urmatorul thread, daca exista.\
+	so_exec - 	Scad timpul thread-ului care ruleaza si il planific pe urmatorul
+	\
+	Functii ajutatoare:
+	thread_start - 	Determina contextul in care se va executa noul thread\
+	call_scheduler- PLanifica urmatorul thread care va rula. Daca exista un 
+					thread care ruleaza, dar nu mai exista alte thread-uri
+					care asteapta in coada sau daca functia find_next() 
+					intoarce FALSE (nu exista un alt thread care sa-i ia 
+					locul), atunci thread-ul curent isi continua executia
+					(ii este resetata cuanta de timp, daca e nevoie si ii
+					este eliberat semaforul).\
+	find_next - 	Functia verifica daca exista un alt thread care sa intre in
+					executie. Daca exista, intoarce TRUE si ruleaza thread-ul 
+					nou. In caz contrar, intoarce FALSE.\
+	run_next_thread - Executa thred-ul cu prioritatea cea mai mare (primul
+					  element din coada cu prioritati).\
+	add_in_queue - 	Adauga thread-ul in coada (ordonata descrescator in functie
+					prioritate), inainte de thread-ul care are prioritatea mai
+					mica decat a lui.\
+	delete_from_queue() - 	Elimina elementul de pe prima pozitie si shifteaza
+							restul elementlor.\
+\
+	Functionalitati extra:\
+		Nu am implementat nimic extra.\
+\
+	Functionalitati lipsa:\
+		Nu am apucat sa implementez functia: so_signal.\
+\
+Cum se compilează și cum se rulează:\
+    Pentru compilare am creat un fisier Makefile cu regula build care 
+    compilează biblioteca dinamică libscheduler.so. \
+\
+    Pentru testare se poate rula checkerul sau fiecare test manual.\
